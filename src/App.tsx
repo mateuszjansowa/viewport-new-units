@@ -1,34 +1,285 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import * as React from "react"
+import AppBar from "@mui/material/AppBar"
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardActions from "@mui/material/CardActions"
+import CardContent from "@mui/material/CardContent"
+import CardHeader from "@mui/material/CardHeader"
+import CssBaseline from "@mui/material/CssBaseline"
+import Grid from "@mui/material/Grid"
+import StarIcon from "@mui/icons-material/StarBorder"
+import Toolbar from "@mui/material/Toolbar"
+import Typography from "@mui/material/Typography"
+import GlobalStyles from "@mui/material/GlobalStyles"
+import Container from "@mui/material/Container"
+import Radio from "@mui/material/Radio"
+import RadioGroup from "@mui/material/RadioGroup"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import FormControl from "@mui/material/FormControl"
+import FormLabel from "@mui/material/FormLabel"
+import LogoImage from "./assets/logo.webp"
 
-function App() {
-  const [count, setCount] = useState(0)
+const tiers = [
+  {
+    title: "Standard",
+    price: "15",
+    description: ["2 urządzenia", "10 GB przestrzeni", "Pomoc techniczna"],
+    buttonText: "Wybieram",
+    buttonVariant: "outlined"
+  }
+]
+
+type viewportValuesT = "100vh" | "100lvh" | "100svh" | "100dvh"
+
+function PricingContent() {
+  const [viewportValue, setViewportValue] = React.useState<viewportValuesT>("100vh")
+
+  const handleViewportChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setViewportValue((event.target as HTMLInputElement).value as viewportValuesT)
+  }
+
+  const isNewUnitSupported = React.useMemo(
+    () =>
+      !!(
+        CSS.supports("(height: 100dvh)") &&
+        CSS.supports("(height: 100lvh)") &&
+        CSS.supports("(height: 100svh)")
+      ),
+    [viewportValue]
+  )
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <React.Fragment>
+      <GlobalStyles
+        styles={{
+          ul: {
+            margin: 0,
+            padding: 0,
+            listStyle: "none"
+          }
+        }}
+      />
+      <CssBaseline />
+      <Box
+        sx={{
+          height: viewportValue,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between"
+        }}
+      >
+        <Grid item>
+          <AppBar
+            position="static"
+            color="default"
+            elevation={0}
+            sx={{
+              borderBottom: (theme) => `1px solid ${theme.palette.divider}`
+            }}
+          >
+            <Toolbar
+              sx={{
+                flexWrap: "nowrap",
+                justifyContent: "space-between"
+              }}
+            >
+              <Box
+                sx={{
+                  p: 1,
+                  maxWidth: {
+                    xs: 120,
+                    sm: 150,
+                    md: 250
+                  },
+                  objectFit: "contain"
+                }}
+              >
+                <picture>
+                  <source srcSet={LogoImage} />
+                  <img
+                    src={LogoImage}
+                    alt="Devmentor.pl logo"
+                    style={{
+                      width: "100%"
+                    }}
+                  />
+                </picture>
+              </Box>
+              <Box>
+                <Grid container alignItems="center" justifyContent="end">
+                  <Grid item>
+                    <Button
+                      href="#"
+                      variant="outlined"
+                      sx={{
+                        my: 1,
+                        mx: 1
+                      }}
+                    >
+                      Zaloguj się
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Toolbar>
+          </AppBar>
+        </Grid>
+
+        <Grid item alignSelf="center">
+          <FormControl sx={{ textAlign: 'center' }}>
+            <FormLabel id="viewport-form">Viewport height unit</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="viewport unit"
+              name="viewport-form-units"
+              value={viewportValue}
+              onChange={handleViewportChange}
+            >
+              <FormControlLabel value="100vh" control={<Radio />} label="100vh" />
+              <FormControlLabel
+                value="100lvh"
+                control={<Radio />}
+                label="100lvh"
+                disabled={!isNewUnitSupported}
+              />
+              <FormControlLabel
+                value="100svh"
+                control={<Radio />}
+                label="100svh"
+                disabled={!isNewUnitSupported}
+              />
+              <FormControlLabel
+                value="100dvh"
+                control={<Radio />}
+                label="100dvh"
+                disabled={!isNewUnitSupported}
+              />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+
+        <Grid item>
+          <Container
+            disableGutters
+            maxWidth="sm"
+            component="main"
+            sx={{
+              py: 2,
+              px: 1
+            }}
+          >
+            <Typography
+              component="h1"
+              variant="h4"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              Twój pakiet
+            </Typography>
+            <Typography variant="h5" align="center" color="text.secondary" component="span">
+              Wybierz swój nowy pakiet, aby w pełni wykorzystać potencjał naszej aplikacji!
+            </Typography>{" "}
+            <Typography variant="h5" component="span" color="primary">
+              Skorzystaj z darmowego okresu próbnego!
+            </Typography>
+          </Container>
+        </Grid>
+
+        <Grid item>
+          <Container maxWidth="md" component="main">
+            <Grid container spacing={5} alignItems="flex-end">
+              {tiers.map((tier) => (
+                // Enterprise card is full width at sm breakpoint
+                <Grid item key={tier.title} xs={12}>
+                  <Card>
+                    <CardHeader
+                      title={tier.title}
+                      titleTypographyProps={{
+                        align: "center"
+                      }}
+                      action={tier.title === "Pro" ? <StarIcon /> : null}
+                      subheaderTypographyProps={{
+                        align: "center"
+                      }}
+                      sx={{
+                        backgroundColor: (theme) =>
+                          theme.palette.mode === "light"
+                            ? theme.palette.grey[200]
+                            : theme.palette.grey[700]
+                      }}
+                    />
+                    <CardContent>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "baseline"
+                        }}
+                      >
+                        <Typography component="h2" variant="h3" color="text.primary">
+                          {tier.price}
+                          zł
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary">
+                          /msc
+                        </Typography>
+                      </Box>
+                      <ul>
+                        {tier.description.map((line) => (
+                          <Typography component="li" variant="subtitle1" align="center" key={line}>
+                            {line}
+                          </Typography>
+                        ))}
+                      </ul>
+                    </CardContent>
+                    <CardActions>
+                      <Button fullWidth variant={tier.buttonVariant as "outlined" | "contained"}>
+                        {tier.buttonText}
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </Grid>
+
+        <Grid item>
+          <Box
+            color="default"
+            component="footer"
+            sx={{
+              width: "100%",
+              py: 0.5,
+              borderTop: (theme) => `1px solid ${theme.palette.divider}`
+            }}
+          >
+            <Grid
+              container
+              alignItems="center"
+              justifyContent="end"
+              spacing={2}
+              sx={{
+                width: "100%"
+              }}
+            >
+              <Grid item>
+                <Button variant="outlined">Powrót</Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained">Darmowy okres próbny</Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+      </Box>
+    </React.Fragment>
   )
 }
 
-export default App
+export default function Pricing() {
+  return <PricingContent />
+}
